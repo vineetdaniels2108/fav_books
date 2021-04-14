@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <a href="/logout">Logout</a>
+        <h2>Welcome {{ user.first_name }}</h2>
+    </div>
+
+    <div>
+        {% if book.uploaded_by.first_name == user.first_name %}
+        <form action="/books/{{book.id}}/update_title" method="POST">
+            {% csrf_token %}
+        <input type="text" value="{{book.title}}" name= 'updated_title' id = 'title'>
+        <input type="submit" value="Edit Title">
+        </form>
+        {% else %}
+        <h3> Book Title: {{ book.title }}</h3>
+        {% endif %}
+        <h3>Added by : {{ book.uploaded_by.first_name }}</h3>
+        <h3>Added on: {{ book.created_at }}</h3>
+        <h3>Updated at: {{book.updated_at }} </h3>
+        {% if book.uploaded_by.first_name == user.first_name %}
+        <form action="/books/{{book.id}}/update_desc" method="POST">
+            {% csrf_token %}
+        <input type="text" value="{{book.desc}}" name= 'updated_desc' id = 'desc'>
+        <input type="submit" value="Edit Description">
+        </form>
+        {% else %}
+        <h3> Book Description: {{ book.desc }}</h3>
+        {% endif %}
+        {% if book.uploaded_by.first_name == user.first_name %}
+        <a href="/books/{{book.id}}/delete">Delete Book</a>
+        {% endif %}
+
+    </div>
+
+    <div>
+        <h2>This Book is liked by the following users</h2>
+        {% for user in liked_users %}
+        <li>{{ user.first_name }} {{ user.last_name }}</li>
+        {% if user in liked_users %}
+        <li><a href="/books/{{book.id}}/non_fav">Remove as Favourite</a></li>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <div>
+        {% if user not in liked_users %}
+        <li><a href="/books/{{book.id}}/fav">Add Book as a Favourite</a></li>
+        {%  endif %}
+    </div>
+</body>
+</html>
